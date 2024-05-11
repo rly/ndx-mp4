@@ -1,0 +1,11 @@
+namespaces:
+- author:
+  - Ryan Ly
+  contact:
+  - rly@lbl.gov
+  doc: NWB extension to store MP4 video data as bytes
+  name: ndx-mp4
+  schema:
+  - namespace: core
+  - source: ndx-mp4.extensions.yaml
+  version: 0.1.0
