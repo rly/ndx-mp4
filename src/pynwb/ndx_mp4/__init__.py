@@ -18,11 +18,12 @@ if not os.path.exists(__spec_path):
 # Load the namespace
 load_namespaces(str(__spec_path))
 
-# TODO: Define your classes here to make them accessible at the package level.
-# Either have PyNWB generate a class from the spec using `get_class` as shown
-# below or write a custom class and register it using the class decorator
-# `@register_class("TetrodeSeries", "ndx-mp4")`
-TetrodeSeries = get_class("TetrodeSeries", "ndx-mp4")
+from .mp4 import BaseVideo, MP4H264Video
+
+__all__ = [
+    "Video",
+    "MP4H264Video"
+]
 
 # NOTE: `widgets/tetrode_series_widget.py` adds a "widget"
 # attribute to the TetrodeSeries class. This attribute is used by NWBWidgets.

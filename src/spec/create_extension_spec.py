@@ -1,43 +1,73 @@
 # -*- coding: utf-8 -*-
 import os.path
 
-from pynwb.spec import NWBNamespaceBuilder, export_spec, NWBGroupSpec, NWBAttributeSpec
-
-# TODO: import other spec classes as needed
-# from pynwb.spec import NWBDatasetSpec, NWBLinkSpec, NWBDtypeSpec, NWBRefSpec
+from pynwb.spec import NWBNamespaceBuilder, export_spec, NWBGroupSpec, NWBAttributeSpec, NWBDatasetSpec
 
 
 def main():
-    # these arguments were auto-generated from your cookiecutter inputs
     ns_builder = NWBNamespaceBuilder(
         name="""ndx-mp4""",
         version="""0.1.0""",
         doc="""NWB extension to store MP4 video data as bytes""",
         author=[
-            "Ryan Ly", 
+            "Ryan Ly",
         ],
         contact=[
-            "rly@lbl.gov", 
+            "rly@lbl.gov",
         ],
     )
     ns_builder.include_namespace("core")
-    
-    # TODO: if your extension builds on another extension, include the namespace
-    # of the other extension below
-    # ns_builder.include_namespace("ndx-other-extension")
 
-    # TODO: define your new data types
-    # see https://pynwb.readthedocs.io/en/stable/tutorials/general/extensions.html
-    # for more information
-    tetrode_series = NWBGroupSpec(
-        neurodata_type_def="TetrodeSeries",
-        neurodata_type_inc="ElectricalSeries",
-        doc="An extension of ElectricalSeries to include the tetrode ID for each time series.",
-        attributes=[NWBAttributeSpec(name="trode_id", doc="The tetrode ID.", dtype="int32")],
+    base_video_data = NWBGroupSpec(
+        neurodata_type_def="BaseVideo",
+        neurodata_type_inc="NWBDataInterface",
+        doc=("An abstract base type for storing video data as bytes. Video can be grayscale or color (RGB)."),
+        datasets=[
+            NWBDatasetSpec(
+                name="data",
+                doc="The video data as a scalar dataset of bytes.",
+                dtype="bytes",
+            ),
+            NWBDatasetSpec(
+                name="shape",
+                doc="The shape (dimensions) of the video, e.g., (frames, height, width, 3).",
+                dtype="uint8",
+                shape=[
+                    [3,],
+                    [4,],
+                ],
+                dims=[
+                    [
+                        "frames",
+                        "height",
+                        "width",
+                    ],
+                    [
+                        "frames",
+                        "height",
+                        "width",
+                        "channels",
+                    ],
+                ]
+            ),
+        ],
+        attributes=[
+            NWBAttributeSpec(
+                name="fps",
+                doc="The frames per second of the video.",
+                dtype="float",
+            ),
+        ],
     )
 
-    # TODO: add all of your new data types to this list
-    new_data_types = [tetrode_series]
+    mp4_video_data = NWBGroupSpec(
+        neurodata_type_def="MP4H264Video",
+        neurodata_type_inc="BaseVideo",
+        doc=("A container for storing MP4 video data using the H.264 codec as bytes. "
+             "Video can be grayscale or color (RGB)."),
+    )
+
+    new_data_types = [base_video_data, mp4_video_data]
 
     # export the spec to yaml files in the spec folder
     output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "spec"))

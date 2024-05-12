@@ -1,8 +1,31 @@
 groups:
-- neurodata_type_def: TetrodeSeries
-  neurodata_type_inc: ElectricalSeries
-  doc: An extension of ElectricalSeries to include the tetrode ID for each time series.
+- neurodata_type_def: BaseVideo
+  neurodata_type_inc: NWBDataInterface
+  doc: An abstract base type for storing video data as bytes. Video can be grayscale
+    or color (RGB).
   attributes:
-  - name: trode_id
-    dtype: int32
-    doc: The tetrode ID.
+  - name: fps
+    dtype: float
+    doc: The frames per second of the video.
+  datasets:
+  - name: data
+    dtype: bytes
+    doc: The video data as a scalar dataset of bytes.
+  - name: shape
+    dtype: uint8
+    dims:
+    - - frames
+      - height
+      - width
+    - - frames
+      - height
+      - width
+      - channels
+    shape:
+    - - 3
+    - - 4
+    doc: The shape (dimensions) of the video, e.g., (frames, height, width, 3).
+- neurodata_type_def: MP4H264Video
+  neurodata_type_inc: BaseVideo
+  doc: A container for storing MP4 video data using the H.264 codec as bytes. Video
+    can be grayscale or color (RGB).
